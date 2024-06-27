@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace recipeSandbox
+namespace RecipeApp
 {
 
     internal class Program
@@ -25,7 +25,8 @@ namespace recipeSandbox
         public static double totalCalories = 0; // total calories is calculated through iterations of adding ingredients
         static void Main(string[] args)
         {
-
+            CalorieTracker ct = new CalorieTracker();
+            ct.CaloriesExceeded += Tracker_CaloriesExceeded;
 
 
 
@@ -54,7 +55,7 @@ namespace recipeSandbox
                     case "1":
                         AddRecipe();
 
-                        AddIngredient();
+                        AddIngredient(ct);
 
                         AddStep();
 
@@ -119,7 +120,7 @@ namespace recipeSandbox
 
 
         //Start of Add Ingredient method
-        static public void AddIngredient() //This method prompts the user for ingredient details, stores them and passes them to the Ingredient Class
+        static public void AddIngredient(CalorieTracker ct) //This method prompts the user for ingredient details, stores them and passes them to the Ingredient Class
         {
 
             Console.WriteLine("\nEnter details of each ingredient");
@@ -144,9 +145,19 @@ namespace recipeSandbox
                 Console.WriteLine("\nFood group: ");
                 ingredientFoodGroup = Console.ReadLine();
 
+                
+                ct.AddCalories(ingredientCalories);
+                
+
                 IngredientsList.Add(new IngredientClass(ingredientName, ingredientQuantity, unitOfMeasurement, ingredientCalories, ingredientFoodGroup));
 
+
                 totalCalories += ingredientCalories;
+
+                
+
+                
+               
 
             }
 
@@ -155,6 +166,11 @@ namespace recipeSandbox
 
         }
         //End of add ingredient method
+
+        private static void Tracker_CaloriesExceeded(object sender, EventArgs e)
+        {
+            Console.WriteLine("Warning: Total calories have exceeded 300!");
+        }
 
 
 
